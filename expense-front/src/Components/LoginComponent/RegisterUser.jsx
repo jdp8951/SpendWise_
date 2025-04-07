@@ -1,124 +1,150 @@
-import React, {useState} from "react";
-import {useNavigate} from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import '../../LoginView.css';
-import {registerUser, registerNewUser} from '../../Services/LoginService';
-const RegisterUser=()=>{
+import { registerNewUser } from '../../Services/LoginService';
+
+const RegisterUser = () => {
     const [expenseUser, setExpenseUser] = useState({
         username: "",
         password: "",
         email: "",
-        category:"",
-        
+        category: "",
     });
-    const [password2,setPassword2]=useState("");
-    let navigate=useNavigate();
+    const [password2, setPassword2] = useState("");
+    let navigate = useNavigate();
 
     const saveNewUser = (event) => {
         event.preventDefault();
-        if(expenseUser.password.length<5 || expenseUser.password.length>10){
+
+        // Username validation
+        if (expenseUser.username.trim() === "") {
+            alert("Username is required");
+            return;
+        }
+
+        // Password validation
+        if (expenseUser.password.length < 5 || expenseUser.password.length > 10) {
             alert("Password must be between 5 to 10 characters long");
             return;
         }
-       if(expenseUser.password===password2){
-             registerNewUser(expenseUser).then((response)=>{
-               alert("User is registered successfully...Go For Login");
-               navigate('/');    
-             });
-        }
-        else{
-             alert("Passwords are not matched");
+
+        // Confirm password validation
+        if (expenseUser.password !== password2) {
+            alert("Passwords do not match");
             return;
         }
-      };
-      const  onChangeHandler = (event) =>{
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(expenseUser.email)) {
+            alert("Please enter a valid email address");
+            return;
+        }
+
+        // Category validation
+        if (expenseUser.category.trim() === "") {
+            alert("Please select a category");
+            return;
+        }
+
+        // If all validations pass
+        registerNewUser(expenseUser).then((response) => {
+            alert("User is registered successfully...Go For Login");
+            navigate('/');
+        }).catch((error) => {
+            alert("An error occurred during registration");
+        });
+    };
+
+    const onChangeHandler = (event) => {
         event.persist();
         const name = event.target.name;
-            const value = event.target.value;
-           setExpenseUser(values =>({...values, [name]: value }));
-         };
+        const value = event.target.value;
+        setExpenseUser(values => ({ ...values, [name]: value }));
+    };
 
     return (
-         <div 
-            className="register-background" 
-            style={{ 
-                backgroundImage: "url('https://images.unsplash.com/photo-1565021324587-5fd009870e68?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fERhcmslMjBibHVlfGVufDB8fDB8fHww')", 
-                backgroundSize: "cover", 
-                backgroundPosition: "center", 
-                minHeight: "100vh", 
-                display: "flex", 
-                alignItems: "center", 
-                justifyContent: "center" 
+        <div
+            className="register-background"
+            style={{
+                backgroundImage: "url('https://images.unsplash.com/photo-1565021324587-5fd009870e68?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fERhcmslMjBibHVlfGVufDB8fDB8fHww')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
             }}
         >
-            <div 
-                className="card" 
-                style={{ 
-                    width: "400px", 
+            <div
+                className="card"
+                style={{
+                    width: "400px",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",  // Transparent effect
-                    backdropFilter: "blur(10px)", 
-                    borderRadius: "10px", 
-                    padding: "20px", 
+                    backdropFilter: "blur(10px)",
+                    borderRadius: "10px",
+                    padding: "20px",
                     color: "#ffffff", // White text for contrast
-                    textAlign: "center", 
+                    textAlign: "center",
                     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)"
                 }}
             >
-                <h2 style={{color:"white"}}><u>New User Registration</u></h2>
+                <h2 style={{ color: "white" }}><u>New User Registration</u></h2>
                 <br />
                 <form onSubmit={saveNewUser}>
                     <div className="form-group text-start">
                         <label>User Name:</label>
-                        <input 
-                            type="text" 
-                            placeholder="Enter username" 
-                            className="form-control" 
+                        <input
+                            type="text"
+                            placeholder="Enter username"
+                            className="form-control"
                             name="username"
-                            value={expenseUser.username} 
-                            onChange={onChangeHandler} 
+                            value={expenseUser.username}
+                            onChange={onChangeHandler}
                             style={{ backgroundColor: "rgba(255, 255, 255, 0.2)", color: "#fff", border: "1px solid #ccc" }}
                         />
                     </div>
                     <div className="form-group mt-3 text-start">
                         <label>Password:</label>
-                        <input 
-                            type="password" 
-                            className="form-control" 
+                        <input
+                            type="password"
+                            className="form-control"
                             name="password"
-                            value={expenseUser.password} 
-                            onChange={onChangeHandler} 
+                            value={expenseUser.password}
+                            onChange={onChangeHandler}
                             style={{ backgroundColor: "rgba(255, 255, 255, 0.2)", color: "#fff", border: "1px solid #ccc" }}
                         />
                     </div>
                     <div className="form-group mt-3 text-start">
                         <label>Retype/Confirm Password:</label>
-                        <input 
-                            type="password" 
-                            className="form-control" 
-                            value={password2} 
-                            onChange={(event) => setPassword2(event.target.value)} 
+                        <input
+                            type="password"
+                            className="form-control"
+                            value={password2}
+                            onChange={(event) => setPassword2(event.target.value)}
                             style={{ backgroundColor: "rgba(255, 255, 255, 0.2)", color: "#fff", border: "1px solid #ccc" }}
                         />
                     </div>
                     <div className="form-group mt-3 text-start">
                         <label>User Email:</label>
-                        <input 
-                            type="email" 
-                            placeholder="Enter email" 
-                            className="form-control" 
+                        <input
+                            type="email"
+                            placeholder="Enter email"
+                            className="form-control"
                             name="email"
-                            value={expenseUser.email} 
-                            onChange={onChangeHandler} 
+                            value={expenseUser.email}
+                            onChange={onChangeHandler}
                             style={{ backgroundColor: "rgba(255, 255, 255, 0.2)", color: "#fff", border: "1px solid #ccc" }}
                         />
                     </div>
                     <div className="form-group mt-3 text-start">
                         <label>Select Category:</label>
-                        <input 
-                            list="types" 
-                            name="category" 
-                            className="form-control" 
-                            value={expenseUser.category} 
-                            onChange={onChangeHandler} 
+                        <input
+                            list="types"
+                            name="category"
+                            className="form-control"
+                            value={expenseUser.category}
+                            onChange={onChangeHandler}
                             style={{ backgroundColor: "rgba(255, 255, 255, 0.2)", color: "#fff", border: "1px solid #ccc" }}
                         />
                         <datalist id="types">
@@ -133,4 +159,5 @@ const RegisterUser=()=>{
         </div>
     );
 }
+
 export default RegisterUser;

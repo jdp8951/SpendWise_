@@ -42,13 +42,38 @@ const ExpenseEntry = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Form validations
+    if (!expense.categoryId) {
+      Swal.fire("Validation Error", "Please select a category", "error");
+      return;
+    }
+
+    if (!expense.expenseDate) {
+      Swal.fire("Validation Error", "Please select an expense date", "error");
+      return;
+    }
+
+    if (!expense.amount || expense.amount <= 0) {
+      Swal.fire("Validation Error", "Please enter a valid amount greater than 0", "error");
+      return;
+    }
+
+    if (!expense.description.trim()) {
+      Swal.fire("Validation Error", "Please enter a description", "error");
+      return;
+    }
+
     const action = expense.expenseId ? updateExpense : saveExpense;
     action(expense)
       .then(() => {
         Swal.fire("Success", `Expense ${expense.expenseId ? "Updated" : "Saved"} Successfully!`, "success");
         navigate(-1);
       })
-      .catch((error) => console.error("Error saving expense:", error));
+      .catch((error) => {
+        console.error("Error saving expense:", error);
+        Swal.fire("Error", "An error occurred while saving the expense", "error");
+      });
   };
 
   return (
