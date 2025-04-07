@@ -1,5 +1,0 @@
-package com.infosys.expenseManagementApplication.dao;
-
-public class ExpenseDaoImpl {
-
-}
