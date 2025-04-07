@@ -52,5 +52,9 @@ public class CategoryDaoImpl implements CategoryDao {
 	public Category getCategoryByName(String categoryName) {
 		return repository.getCategoryByName(categoryName);
 	}
+	
+	
+
+    
 
 }

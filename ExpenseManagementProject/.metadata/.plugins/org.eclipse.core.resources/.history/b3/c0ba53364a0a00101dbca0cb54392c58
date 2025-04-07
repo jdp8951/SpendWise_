@@ -1,6 +1,0 @@
-package mypack;
-
-public class MyDemo {
-	System.out.println("Hello");
-
-}
